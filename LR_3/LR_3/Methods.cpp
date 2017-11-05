@@ -1,13 +1,15 @@
 #include"Header.h"
 #include<cmath>
+#include<fstream>
+#include<iostream>
+
 
 Intln::Intln()
 {
 	exponent = 1;
-	mantissa = new char;
-	mantissa[0] = '0';
-	mantissa[1] = '\0';
+	mantissa = NULL;
 }
+
 
 Intln::Intln(int e, char* m)
 {
@@ -20,6 +22,7 @@ Intln::Intln(int e, char* m)
 	mantissa[exponent] = '\0';
 }
 
+
 Intln::Intln(Intln &n)
 {
 	exponent = n.exponent;
@@ -30,53 +33,11 @@ Intln::Intln(Intln &n)
 	}
 }
 
+
 Intln::~Intln()
 {
 	if (mantissa)
-	{
 		delete[] mantissa;
-	}
-}
-
-
-char* Get_str_numb()
-{
-	char ch;
-	int size = 2;
-	char* num1 = (char*)calloc(size, sizeof(char));
-	int index = 0;
-
-	cout << "Number = ";
-	while (ch = getchar())
-	{
-		if (ch == '\n')
-			break;
-
-		num1[index] = ch;
-		index++;
-
-		if (index >= size)
-		{
-			char* ptr;
-			if ((ptr = (char*)realloc(num1, (size * 2) + 1)) != NULL)
-			{
-
-				size += 1;
-				num1 = ptr;
-			}
-		}
-	}
-	num1[index] = '\0';
-
-	return num1;
-}
-
-
-void Intln::Show()
-{
-	for (int i = 0; i < exponent; i++)
-		cout << mantissa[i];
-	cout << endl;
 }
 
 
@@ -165,8 +126,6 @@ Intln Intln::operator+(const Intln& right)
 
 	result.mantissa[result.exponent] = '\0';
 
-	//*this = result;
-
 	return result;
 }
 
@@ -252,6 +211,7 @@ Intln operator-(const Intln& left, const Intln& right)
 	return result;
 }
 
+
 Intln::operator long()
 {
 	long a = 0;
@@ -301,4 +261,90 @@ Intln Intln::operator++(int)
 	Intln temp = *this;
 	++*this;
 	return temp;
+}
+
+
+ostream& operator<<(ostream& os, Intln& numb)
+{
+	for (int i = 0; i < numb.exponent; i++)
+		os << numb.mantissa[i];
+	return os;
+}
+
+
+istream& operator >> (istream& is, Intln& numb)
+{
+	char ch;
+	int size = 2;
+	char* num = (char*)calloc(size, sizeof(char));
+	int index = 0;
+
+	while (ch = getchar())
+	{
+		if (ch == '\n')
+			break;
+
+		num[index] = ch;
+		index++;
+
+		if (index >= size)
+		{
+			char* ptr;
+			if ((ptr = (char*)realloc(num, (size * 2) + 1)) != NULL)
+			{
+
+				size += 1;
+				num = ptr;
+			}
+		}
+	}
+	num[index] = '\0';
+
+	numb.exponent = strlen(num);
+	numb.mantissa = new char[numb.exponent + 1];
+	for (int i = 0; i <= numb.exponent; i++)
+	{
+		numb.mantissa[i] = num[i];
+	}
+	return is;
+}
+
+ofstream& operator<<(ofstream& os, Intln& numb)
+{
+	os << numb.exponent << " " << numb.mantissa << endl;
+
+	return os;
+}
+
+ifstream& operator >> (ifstream& is, Intln& numb)
+{
+	if (numb.mantissa)
+		delete[] numb.mantissa;
+	numb.exponent = is.get() - '0';
+	is.get();
+	numb.mantissa = new char[numb.exponent + 1];
+	int i;
+	for (i = 0; i < numb.exponent + 1; i++)
+		numb.mantissa[i] = is.get();
+	numb.mantissa[i - 1] = '\0';
+
+	return is;
+}
+
+void Intln::bin_read(ifstream& bin_f)
+{
+	if (mantissa)
+		delete[] mantissa;
+	bin_f.read((char*)&exponent, sizeof(int));
+	mantissa = new char[exponent + 1];
+	bin_f.read(mantissa, exponent + 1);
+
+}
+
+
+void Intln::bin_write(ofstream& bin_f)
+{
+	bin_f.write((char*)&exponent, sizeof(int));
+	bin_f.write(mantissa, exponent + 1);
+	bin_f.flush();
 }

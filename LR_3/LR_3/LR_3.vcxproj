@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{CCDB1E88-5C05-4E14-BB86-FD5961B199DC}</ProjectGuid>
-    <RootNamespace>LR_2</RootNamespace>
+    <ProjectGuid>{871F523C-F493-4BCF-A589-D49470701FCD}</ProjectGuid>
+    <RootNamespace>LR_3</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
